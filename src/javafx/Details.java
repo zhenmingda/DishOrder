@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 
 /**
  * Created by dashu on 2016/4/6.
+ * version 1.0
+ * This class is to show details
  */
 public class Details {
 
@@ -64,19 +66,19 @@ public class Details {
                 detailStage.close();
             } else AlertBox.display("Error", "Amount is too large");
         });
-        HBox hBox = new HBox(20);
+        HBox hBoxForAmount = new HBox(20);
 
         amount.setPrefSize(50, 20);
-        hBox.getChildren().addAll(new Label("Amount :"), minusButton, amount, addButton);
+        hBoxForAmount.getChildren().addAll(new Label("Amount :"), minusButton, amount, addButton);
         VBox vBox = new VBox(20);
         vBox.setAlignment(Pos.CENTER);
-        hBox.setAlignment(Pos.CENTER);
+        hBoxForAmount.setAlignment(Pos.CENTER);
 
         ImageView imageView = new ImageView("pictures/" + recipe.getImage());
         imageView.setFitHeight(200);
         imageView.setFitWidth(200);
         vBox.getChildren().addAll(new Label("DishID :" + " " + recipe.getDishID()), label, imageView,
-                new Text(recipe.getIntroduction()), new Label("Price : " + recipe.getPrice() + " Euro"), hBox, confirmButton);
+                new Text(recipe.getIntroduction()), new Label("Price : " + recipe.getPrice() + " Euro"), hBoxForAmount, confirmButton);
 
         detailStage.setScene(new Scene(vBox, 1024, 768));
         detailStage.show();
