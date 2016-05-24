@@ -2,6 +2,7 @@ package javafx;
 
 import database.ConnectionManager;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,35 +28,31 @@ public class MainInterface extends Application {
     }
 
     public void start(Stage primaryStage) throws Exception {
-        // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-
         primaryStage.setTitle("Shanghai Restaurant");
         VBox vbox1 = new VBox(70);
         vbox1.setAlignment(Pos.CENTER);
 
         VBox vbox2 = new VBox(10);
-        Label label1 = new Label("Shanghai Restaurant");
-        label1.setFont(Font.font("Arial", BOLD, 30));
-        label1.setTextFill(Paint.valueOf("#ab1a1a"));
-        Label label2 = new Label("© Copyright 2016 Shanghai Restaurant");
+        Label nameLabel = new Label("Shanghai Restaurant");
+        nameLabel.setFont(Font.font("Arial", BOLD, 30));
+        nameLabel.setTextFill(Paint.valueOf("#ab1a1a"));
+        Label copyRight = new Label("© Copyright 2016 Shanghai Restaurant");
 
-        Label label3 = new Label("Table Number");
-        // label3.setPrefSize(50,60);
-        // label1.setfont;
+        Label tableID = new Label("Table Number");
         TextField text = new TextField();
 
         text.setPromptText("01");
         HBox hbox = new HBox(10);
         hbox.setAlignment(Pos.CENTER);
-        hbox.getChildren().addAll(label3, text);
-        Button button = new Button("Confirm");
+        hbox.getChildren().addAll(tableID, text);
+        Button confirm = new Button("Confirm");
         text.requestFocus();
-        button.setDefaultButton(true);
-        button.setOnAction(e ->
+        confirm.setDefaultButton(true);
+        confirm.setOnAction(e ->
         {
             try {
                 int tableNumber = Integer.parseInt(text.getText());
-
+//check if table number has existed
                 if (tableNumber < 100 && tableNumber > 0) {
                     con.connect();
                     if (con.update("insert into user values('" + tableNumber + "')") == 1) {
@@ -81,14 +78,15 @@ public class MainInterface extends Application {
             }
 
         });
-        vbox2.getChildren().addAll(hbox, button);
-        vbox1.getChildren().addAll(label1, vbox2, label2);
+        vbox2.getChildren().addAll(hbox, confirm);
+        vbox1.getChildren().addAll(nameLabel, vbox2, copyRight);
         vbox2.setAlignment(Pos.CENTER);
         primaryStage.setScene(new Scene(vbox1, 500, 600));
         primaryStage.setMaxHeight(600);
         primaryStage.setMaxWidth(500);
-        //Scene scene1=new Scene();
+        primaryStage.setResizable(false);
         primaryStage.getIcons().add(new Image("pictures/Kung Pao Chicken.jpg"));
         primaryStage.show();
+        primaryStage.setOnCloseRequest(e-> Platform.exit());
     }
 }
