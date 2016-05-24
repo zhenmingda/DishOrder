@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by dashu on 2016/4/21.
  * version 1.0
- * This class is to show Main Menu
+ * This class is to show MainInterface Menu
  */
 public class SwingMainMenu extends JFrame {
 
