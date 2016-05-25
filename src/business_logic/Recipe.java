@@ -74,12 +74,12 @@ public class Recipe {
         this.image = image;
     }
 
-    //read recipe by category from recipe table in database
-    public List<Recipe> readRecipeByCategory(String category) {
+    //read recipe  from recipe table in database
+    public List<Recipe> readRecipe(String category) {
         List<Recipe> recipeList = new LinkedList<Recipe>();
 
         RecipeDao recipeDao = new RecipeDao(db);
-        List<RecipeTo> recipeToList = recipeDao.readRecipeByCategory(category);
+        List<RecipeTo> recipeToList = recipeDao.readRecipe(category);
         for (RecipeTo i : recipeToList) {
             Recipe recipe = new Recipe();
             recipe.setDishID(i.getDishID());
@@ -93,22 +93,5 @@ public class Recipe {
 
         return recipeList;
     }
-    //read recipe by name from recipe table in database
-    public Recipe readRecipeByName(String recipeName) {
 
-
-        RecipeDao recipeDao = new RecipeDao(db);
-       RecipeTo recipeTo = recipeDao.readRecipeByName(recipeName);
-
-            Recipe recipe = new Recipe();
-            recipe.setDishID(recipeTo.getDishID());
-            recipe.setIntroduction(recipeTo.getIntroduction());
-            recipe.setCategory(recipeTo.getCategory());
-            recipe.setRecipeName(recipeTo.getRecipeName());
-            recipe.setPrice(recipeTo.getPrice());
-            recipe.setImage(recipeTo.getImage());
-
-
-        return recipe;
-    }
 }

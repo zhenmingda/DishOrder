@@ -9,6 +9,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.List;
+
 /**
  * Created by dashu on 2016/4/23.
  * version 1.0
@@ -29,7 +31,7 @@ public class SwingDetails extends JFrame {
     }
 // show GUI
     private void setGui() throws IOException {
-        Recipe recipe = new Recipe().readRecipeByName(recipeName);
+     List<Recipe> recipe = new Recipe().readRecipe(recipeName);
         Order order = new Order();
         JTextField amount = new JTextField("1", 5);
         amount.setEditable(false);
@@ -55,8 +57,8 @@ public class SwingDetails extends JFrame {
         confirmButton.addActionListener(e -> {
             if (Integer.parseInt(amount.getText()) < 20) {
                 order.setRecipeName(recipeName);
-                order.setPrice(recipe.getPrice());
-                order.setDishID(recipe.getDishID());
+                order.setPrice(recipe.get(0).getPrice());
+                order.setDishID(recipe.get(0).getDishID());
                 order.setAmount(amount.getText());
                 order.setIngredient("");
                 order.toOrder(tableNumber);
@@ -75,12 +77,12 @@ public class SwingDetails extends JFrame {
         hBox.add(addButton);
 
         Box vBox = Box.createVerticalBox();
-        Image image = ImageIO.read(new File("src/pictures/" + recipe.getImage()));
+        Image image = ImageIO.read(new File("src/pictures/" + recipe.get(0).getImage()));
         Image resizedImage = image.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
         JLabel imgageLabel = new JLabel(new ImageIcon(resizedImage));
-        JLabel introLable = new JLabel(recipe.getIntroduction());
-        JLabel priceLabel = new JLabel("Price : " + recipe.getPrice() + " Euro");
-        JLabel idLabel = new JLabel("DishID :" + " " + recipe.getDishID());
+        JLabel introLable = new JLabel(recipe.get(0).getIntroduction());
+        JLabel priceLabel = new JLabel("Price : " + recipe.get(0).getPrice() + " Euro");
+        JLabel idLabel = new JLabel("DishID :" + " " + recipe.get(0).getDishID());
         idLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         imgageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         hBox.setAlignmentX(Component.CENTER_ALIGNMENT);

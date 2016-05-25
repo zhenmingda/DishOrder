@@ -124,7 +124,7 @@ public class SwingMainMenu extends JFrame {
         grid.setVgap(50);
         grid.setHgap(10);
         jPanel.setLayout(grid);
-        recipeList = new Recipe().readRecipeByCategory(value);
+        recipeList = new Recipe().readRecipe(value);
         for (int i = 0; i < recipeList.size(); i++) {
             Image image = ImageIO.read(new File("src/pictures/" + recipeList.get(i).getImage()));
             Image resizedImage = image.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
