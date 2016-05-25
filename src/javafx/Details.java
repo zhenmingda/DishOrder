@@ -48,20 +48,7 @@ public class Details {
         Label priceLabel = new Label("Price : " + recipe.get(0).getPrice() + " Euro");
 
 
-        addButton.setOnAction(e -> {
-            int i = Integer.parseInt(amount.getText());
-            i = i + 1;
-            amount.setText(String.valueOf(i));
-        });
-        minusButton.setOnAction(e -> {
-            int i = Integer.parseInt(amount.getText());
-            if (i == 1) {
-                amount.setText("1");
-            } else
-
-                i = i - 1;
-            amount.setText(String.valueOf(i));
-        });
+        addAmount(amount, addButton, minusButton);
         confirmButton.setOnAction(e -> {
             if (Integer.parseInt(amount.getText()) < 20) {
                 order.setRecipeName(recipeName);
@@ -89,5 +76,22 @@ public class Details {
 
         detailStage.setScene(new Scene(vBox, 1024, 768));
         detailStage.show();
+    }
+
+    private static void addAmount(TextField amount, Button addButton, Button minusButton) {
+
+        addButton.setOnAction(e -> {
+            int i = Integer.parseInt(amount.getText());
+            i = i + 1;
+            amount.setText(String.valueOf(i));
+        });
+        minusButton.setOnAction(e -> {
+            int i = Integer.parseInt(amount.getText());
+            if (i == 1) {
+                amount.setText("1");
+            } else
+                i = i - 1;
+            amount.setText(String.valueOf(i));
+        });
     }
 }

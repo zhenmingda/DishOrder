@@ -31,7 +31,7 @@ public class SwingDetails extends JFrame {
     }
 // show GUI
     private void setGui() throws IOException {
-     List<Recipe> recipe = new Recipe().readRecipe(recipeName);
+        List<Recipe> recipe = new Recipe().readRecipe(recipeName);
         Order order = new Order();
         JTextField amount = new JTextField("1", 5);
         amount.setEditable(false);
@@ -39,20 +39,7 @@ public class SwingDetails extends JFrame {
         JButton addButton = new JButton("+");
         JButton minusButton = new JButton("-");
         JButton confirmButton = new JButton("Confirm");
-        addButton.addActionListener(e -> {
-            int i = Integer.parseInt(amount.getText());
-            i = i + 1;
-            amount.setText(String.valueOf(i));
-        });
-        minusButton.addActionListener(e -> {
-            int i = Integer.parseInt(amount.getText());
-            if (i == 1) {
-                amount.setText("1");
-            } else
-
-                i = i - 1;
-            amount.setText(String.valueOf(i));
-        });
+        addAmount(amount, addButton, minusButton);
         //add recipe to order table in the database 
         confirmButton.addActionListener(e -> {
             if (Integer.parseInt(amount.getText()) < 20) {
@@ -115,5 +102,21 @@ public class SwingDetails extends JFrame {
         setIconImage(img.getImage());
         setVisible(true);
         pack();
+    }
+
+    private static void addAmount(JTextField amount, JButton addButton, JButton minusButton) {
+        addButton.addActionListener(e -> {
+            int i = Integer.parseInt(amount.getText());
+            i = i + 1;
+            amount.setText(String.valueOf(i));
+        });
+        minusButton.addActionListener(e -> {
+            int i = Integer.parseInt(amount.getText());
+            if (i == 1) {
+                amount.setText("1");
+            } else
+                i = i - 1;
+            amount.setText(String.valueOf(i));
+        });
     }
 }
