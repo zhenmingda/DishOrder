@@ -2,7 +2,7 @@ package javafx;
 /**
  * Created by dashu on 2016/4/4.
  * version 1.0
- * This class is to show Main Menu
+ * This class is to show MainInterface Menu
  */
 
 import database.ConnectionManager;
