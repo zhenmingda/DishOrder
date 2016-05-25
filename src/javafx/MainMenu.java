@@ -6,7 +6,6 @@ package javafx;
  */
 
 import database.ConnectionManager;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,7 +19,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import business_logic.Recipe;
-import javafx.stage.WindowEvent;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -114,7 +112,7 @@ public class MainMenu {
         grid.setVgap(30);
         grid.setHgap(30);
         int j = 0;
-        recipeList=new Recipe().readRecipeByCategory(value);
+        recipeList=new Recipe().readRecipe(value);
         for (int i = 0; i < recipeList.size(); i++) {
             imageView = new ImageView("pictures/" + recipeList.get(i).getImage());
             imageView.setFitHeight(200);

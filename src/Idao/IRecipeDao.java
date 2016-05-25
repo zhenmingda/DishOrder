@@ -11,7 +11,5 @@ import java.util.List;
  * The interface provides two read methods fucntions
  */
 public interface IRecipeDao {
-     List<RecipeTo> readRecipeByCategory(String category);
-     RecipeTo readRecipeByName(String name);
-
+     List<RecipeTo> readRecipe(String category);
 }

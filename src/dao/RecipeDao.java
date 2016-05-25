@@ -1,6 +1,7 @@
 package dao;
 
 import Idao.IRecipeDao;
+import com.sun.javafx.image.BytePixelSetter;
 import database.ConnectionManager;
 import dto.RecipeTo;
 
@@ -22,11 +23,15 @@ public class RecipeDao implements IRecipeDao {
         con.connect();
     }
 
-//Read recipe by category
+    //Read recipe
     @Override
-    public List<RecipeTo> readRecipeByCategory(String category) {
+    public List<RecipeTo> readRecipe(String value) {
         List<RecipeTo> res = new LinkedList<RecipeTo>();
-        ResultSet rset = con.query("SELECT * FROM dish where category='" + category + "'");
+        ResultSet rset;
+        if (value == "Beef" || value == "Pork" || value == "Chicken" || value == "Beverage" || value == "Customization"||value=="Vegetables")
+            rset = con.query("SELECT * FROM dish where category='" + value + "'");
+
+        else rset = con.query("SELECT * FROM dish where recipename='" + value + "'");
         try {
             while (rset.next()) {
                 res.add(new RecipeTo(rset.getInt("dishID"), rset
@@ -37,27 +42,10 @@ public class RecipeDao implements IRecipeDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-con.disconnect();
+        con.disconnect();
         return res;
     }
-    //Read recipe by name
-    @Override
-    public RecipeTo readRecipeByName(String name) {
-        RecipeTo recipeTo = null;
-        ResultSet rset = con.query("SELECT * FROM dish where recipename='" + name + "'");
-        try {
-            while (rset.next()) {
-                recipeTo = new RecipeTo(rset.getInt("dishID"), rset
-                        .getString("recipename"), rset.getString("introduction"), rset
-                        .getString("price"), rset.getString("category"),
-                        rset.getString("image"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-con.disconnect();
-        return recipeTo;
-    }
+
 
 
 }
