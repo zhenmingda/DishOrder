@@ -100,7 +100,7 @@ public class SwingDetails extends JFrame {
         ImageIcon img = new ImageIcon("src/pictures/Kung Pao Chicken.jpg");
         setIconImage(img.getImage());
         setVisible(true);
-        pack();
+pack();
     }
     //increase or decrease amount
     private static void handleAmount(JTextField amount, JButton addButton, JButton minusButton) {
