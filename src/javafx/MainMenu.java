@@ -5,6 +5,7 @@ package javafx;
  * This class is to show MainInterface Menu
  */
 
+import Swing.SwingCustomization;
 import database.ConnectionManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,6 +21,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import business_logic.Recipe;
 
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,6 +41,7 @@ public class MainMenu {
     Button viewOrder = new Button("View Order");
     Stage mainMenu;
     private int tableNumber;
+    private boolean check =true;
 
 
     public MainMenu(int tableNumber) {
@@ -149,25 +154,46 @@ public class MainMenu {
 
     }
 
+    //add listener for image in the context of Customization category. If the customization is created, it can not be created again
     private void addEventHandlerForCustomization(ImageView imageView, Label nameLabel, int dishID) {
-        imageView.setOnMouseClicked((MouseEvent event) ->
-                new Customization(nameLabel, tableNumber, dishID));
+
+
+        imageView.setOnMouseClicked((MouseEvent event) -> {
+            con.connect();
+            ResultSet resultSet = con.query("select 1 from order1 where dishID='" + dishID + "'AND TableID='" + tableNumber + "'");
+            try {
+                if (resultSet.next()) {
+
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Hint");
+                        alert.setHeaderText("Hint");
+                        alert.setContentText("Please choose another customized recipe or delete it in Order Table");
+                        alert.showAndWait();
+
+                }else
+                    new Customization(nameLabel, tableNumber, dishID);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            con.disconnect();
+        });
     }
 
-
+//add listener for other recipes
     public void addEventHandler(ImageView imageView, Label nameLabel) {
 
         imageView.setOnMouseClicked((MouseEvent event) ->
                 new Details(nameLabel.getText(), tableNumber)
         );
     }
-
+//create tree, add tree item
     public TreeItem<String> makeTree(String title, TreeItem<String> parent) {
         TreeItem<String> treeItem = new TreeItem<>(title);
         treeItem.setExpanded(true);
         parent.getChildren().add(treeItem);
         return treeItem;
     }
+
     private void backToMainInterface() {
         try {
             con.connect();

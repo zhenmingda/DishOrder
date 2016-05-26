@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,16 +27,17 @@ public class Details {
     int tableNumber;
     String recipeName;
 
-    Label nameLabel;
+
 
     public Details(String recipeName, int tableNumber) {
         this.recipeName = recipeName;
         this.tableNumber = tableNumber;
-        nameLabel = new Label(recipeName);
+
         setGui();
     }
 
     public void setGui() {
+        Label nameLabel = new Label(recipeName);
         Stage detailStage = new Stage();
         List<Recipe> recipe = new Recipe().readRecipe(recipeName);
         Order order = new Order();
@@ -48,7 +50,7 @@ public class Details {
         Label priceLabel = new Label("Price : " + recipe.get(0).getPrice() + " Euro");
 
 
-        addAmount(amount, addButton, minusButton);
+        handleAmount(amount, addButton, minusButton);
         confirmButton.setOnAction(e -> {
             if (Integer.parseInt(amount.getText()) < 20) {
                 order.setRecipeName(recipeName);
@@ -74,11 +76,14 @@ public class Details {
         vBox.getChildren().addAll(dishID, nameLabel, imageView, introduction
                 , priceLabel, hBoxForAmount, confirmButton);
 
-        detailStage.setScene(new Scene(vBox, 1024, 768));
+        detailStage.setScene(new Scene(vBox, 500, 600));
+        detailStage.getIcons().add(new Image("pictures/Kung Pao Chicken.jpg"));
+        detailStage.setTitle(recipeName);
+
         detailStage.show();
     }
-
-    private static void addAmount(TextField amount, Button addButton, Button minusButton) {
+//increase or decrease amount
+    private static void handleAmount(TextField amount, Button addButton, Button minusButton) {
 
         addButton.setOnAction(e -> {
             int i = Integer.parseInt(amount.getText());

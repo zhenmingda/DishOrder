@@ -15,6 +15,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -36,21 +38,20 @@ public class SwingMainMenu extends JFrame {
 
     GridLayout grid = new GridLayout(0, 3);
 
-    public static void main(String[] args) {
-        new SwingMainMenu(85);
-    }
 
     public SwingMainMenu(int tableNumber) {
         this.tableNumber = tableNumber;
         next();
     }
-//show GUI
+
+    //show GUI
     private void next() {
         DefaultMutableTreeNode root, meat, beverage, vegetables, customization;
         backToMainButton.addActionListener(e -> {
             backToMainInterface();
         });//rechoose table number
-        root = new DefaultMutableTreeNode();
+
+        root = new DefaultMutableTreeNode();//root tree node
 
         //Meat
         meat = makeTree("Meat", root);
@@ -92,7 +93,10 @@ public class SwingMainMenu extends JFrame {
         JPanel jSouth = new JPanel();
         jSouth.add(backToMainButton);
         add(jSouth, BorderLayout.SOUTH);
-        viewOrder.addActionListener(e -> new SwingShowOrder(tableNumber));
+        viewOrder.addActionListener(e -> {
+            new SwingShowOrder(tableNumber);
+
+        });
         viewOrder.setAlignmentX(Component.CENTER_ALIGNMENT);
         //Display the window.
         setSize(1024, 700);
@@ -136,7 +140,9 @@ public class SwingMainMenu extends JFrame {
                 addEventHandler(imageLabel, nameLabel, recipeList.get(i).getDishID());
             } else {
                 addEventHandlerForCustomization(imageLabel, nameLabel, recipeList.get(i).getDishID());
+
             }
+
             Box v1 = Box.createVerticalBox();//create a vertical box for each recipe
             v1.add(Box.createVerticalStrut(10));
             v1.add(imageLabel);
@@ -155,13 +161,15 @@ public class SwingMainMenu extends JFrame {
             hintLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             v2.add(hintLabel);
             v2.add(Box.createVerticalStrut(10));
-        } else hintLabel.setText("");//the text of hint label will appear if clicking another category aftering clicking customization.
-                                        // So it should be set null
+        } else
+            hintLabel.setText("");//the text of hint nameLabel will appear if clicking another category aftering clicking customization.
+        // So it should be set null
         v2.add(jScrollPane);
         add(v2, BorderLayout.CENTER);
     }
 
     //add listener for image.
+
     private void addEventHandler(JLabel imageLabel, JLabel nameLabel, int dishID) {
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -175,22 +183,31 @@ public class SwingMainMenu extends JFrame {
         });
     }
 
-    //add listener for image in the context of Customization category
     private void addEventHandlerForCustomization(JLabel imageLabel, JLabel nameLabel, int dishID) {
 
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                con.connect();
+                ResultSet resultSet = con.query("select 1 from order1 where dishID='" + dishID + "'AND TableID='" + tableNumber + "'");
                 try {
-                    new SwingCustomization(nameLabel, tableNumber, dishID);
+                    if (resultSet.next()) {
+                      JOptionPane.showMessageDialog(jPanel,"Please choose another customized recipe or delete it in Order Table","Hint",JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    else new SwingCustomization(nameLabel, tableNumber, dishID);
+
                 } catch (IOException e1) {
                     e1.printStackTrace();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
                 }
+
+               con.disconnect();
+
             }
         });
-
-
     }
+
 
     //make a tree
     public DefaultMutableTreeNode makeTree(String title, DefaultMutableTreeNode parent) {

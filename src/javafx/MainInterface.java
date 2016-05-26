@@ -46,7 +46,6 @@ public class MainInterface extends Application {
         hbox.setAlignment(Pos.CENTER);
         hbox.getChildren().addAll(tableID, text);
         Button confirm = new Button("Confirm");
-        text.requestFocus();
         confirm.setDefaultButton(true);
         confirm.setOnAction(e ->
         {

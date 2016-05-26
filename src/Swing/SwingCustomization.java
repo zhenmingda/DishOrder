@@ -8,6 +8,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -29,6 +31,7 @@ public class SwingCustomization extends JFrame {
     private int price = 0;
 
     public SwingCustomization(JLabel customizationName, int tableNumber, int dishID) throws IOException {
+
         this.customizationName = customizationName;
         this.tableNumber = tableNumber;
         this.dishID = dishID;
@@ -40,22 +43,8 @@ public class SwingCustomization extends JFrame {
         List<Ingredient> ingredientList = new Ingredient().readIngredient();
 
         JButton confirmButton = new JButton("Confirm");
-        ConnectionManager con = new ConnectionManager();
-        con.connect();
-        ResultSet resultSet = con.query("select 1 from order1 where dishID='" + dishID + "'AND TableID='" + tableNumber + "'");
-        try {
 
-            while (resultSet.next()) {
 
-                if (resultSet.getInt("1") == 1) {
-                    con.disconnect();
-                    dispose();
-                }
-            }
-            con.disconnect();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         JTextField amount = new JTextField("1", 5);
         amount.setEditable(false);
 
@@ -86,6 +75,7 @@ public class SwingCustomization extends JFrame {
                 order.setPrice(String.valueOf(price * Integer.parseInt(amount.getText())));
                 order.setIngredient(ingredient);
                 order.toOrder(tableNumber);
+                confirmButton.setEnabled(false);
                 dispose();
             }
         });
@@ -165,7 +155,7 @@ public class SwingCustomization extends JFrame {
         setLayout(new FlowLayout());
         add(v1);
         //Display the window.
-        setMinimumSize(new Dimension(1024, 740));
+        setMaximumSize(new Dimension(1024, 700));
         setLocationRelativeTo(null);
         setTitle("Customization");
         ImageIcon img = new ImageIcon("src/pictures/Kung Pao Chicken.jpg");
