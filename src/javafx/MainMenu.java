@@ -6,6 +6,8 @@ package javafx;
  */
 
 import Swing.SwingCustomization;
+import business_logic.Order;
+import business_logic.User;
 import database.ConnectionManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -41,7 +43,7 @@ public class MainMenu {
     Button viewOrder = new Button("View Order");
     Stage mainMenu;
     private int tableNumber;
-    private boolean check =true;
+    private boolean check = true;
 
 
     public MainMenu(int tableNumber) {
@@ -50,7 +52,7 @@ public class MainMenu {
         this.tableNumber = tableNumber;
         next();
     }
-
+//show gui
     public void next() {
         mainMenu = new Stage();
         mainMenu.setTitle("Shanghai Restaurant");
@@ -90,9 +92,9 @@ public class MainMenu {
                 //Nothing is selected.
                 return;
             if (newValue.isLeaf()) {
-                String value =newValue.getValue();
+                String value = newValue.getValue();
 
-                show(value);
+                show(value);//create gridpane
             }
         });
         StackPane stackPane = new StackPane();//let child nodes be set in the center
@@ -105,7 +107,6 @@ public class MainMenu {
         mainMenu.setMaxWidth(1024);
         mainMenu.setScene(scene);
         mainMenu.getIcons().add(new Image("pictures/Kung Pao Chicken.jpg"));
-        mainMenu.setResizable(false);
         mainMenu.show();
         mainMenu.setOnCloseRequest(event -> event.consume());//window will not be close
     }
@@ -117,7 +118,8 @@ public class MainMenu {
         grid.setVgap(30);
         grid.setHgap(30);
         int j = 0;
-        recipeList=new Recipe().readRecipe(value);
+        recipeList = new Recipe().readRecipe(value);
+        //let image and nameLabel be a small vbox added in the grid
         for (int i = 0; i < recipeList.size(); i++) {
             imageView = new ImageView("pictures/" + recipeList.get(i).getImage());
             imageView.setFitHeight(200);
@@ -125,7 +127,8 @@ public class MainMenu {
             nameLabel = new Label(recipeList.get(i).getRecipeName());
             if (value != "Customization")
                 addEventHandler(imageView, nameLabel);
-            else addEventHandlerForCustomization(imageView, nameLabel, recipeList.get(i).getDishID());//if choosing customization category,add this even thandler
+            else
+                addEventHandlerForCustomization(imageView, nameLabel, recipeList.get(i).getDishID());//if choosing customization category,add this even thandler
             VBox v1 = new VBox(10);
             nameLabel.setAlignment(Pos.CENTER);
             v1.setAlignment(Pos.CENTER);
@@ -155,51 +158,53 @@ public class MainMenu {
     }
 
     //add listener for image in the context of Customization category. If the customization is created, it can not be created again
+    //if customers click a image whose corresponding recipe has existed in the order table, an alert dialog will show
     private void addEventHandlerForCustomization(ImageView imageView, Label nameLabel, int dishID) {
 
 
         imageView.setOnMouseClicked((MouseEvent event) -> {
-            con.connect();
-            ResultSet resultSet = con.query("select 1 from order1 where dishID='" + dishID + "'AND TableID='" + tableNumber + "'");
-            try {
-                if (resultSet.next()) {
+            Order judgeOrder = new Order();
+            judgeOrder.setDishID(dishID);
+            if (judgeOrder.toOrder(tableNumber,false)) {
+                new Customization(nameLabel, tableNumber, dishID);
+            } else {
 
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Hint");
-                        alert.setHeaderText("Hint");
-                        alert.setContentText("Please choose another customized recipe or delete it in Order Table");
-                        alert.showAndWait();
+                alert();//alert dialog
 
-                }else
-                    new Customization(nameLabel, tableNumber, dishID);
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-            con.disconnect();
+
+
         });
     }
 
-//add listener for other recipes
+    private static void alert() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Hint");
+        alert.setHeaderText("Hint");
+        alert.setContentText("Please choose another customized recipe or delete it in Order Table");
+        alert.showAndWait();
+    }
+
+    //add listener for other recipes
     public void addEventHandler(ImageView imageView, Label nameLabel) {
 
         imageView.setOnMouseClicked((MouseEvent event) ->
                 new Details(nameLabel.getText(), tableNumber)
         );
     }
-//create tree, add tree item
+
+    //create tree, add tree item
     public TreeItem<String> makeTree(String title, TreeItem<String> parent) {
         TreeItem<String> treeItem = new TreeItem<>(title);
         treeItem.setExpanded(true);
         parent.getChildren().add(treeItem);
         return treeItem;
     }
-
+//back to Main Interface
     private void backToMainInterface() {
         try {
-            con.connect();
-            con.update("delete from user where TableID='" + tableNumber + "'");
-            new MainInterface().start(new Stage());
-            con.disconnect();
+            new User(tableNumber).delete();
+            new MainInterface().start(mainMenu);
             mainMenu.close();
         } catch (Exception e1) {
             e1.printStackTrace();

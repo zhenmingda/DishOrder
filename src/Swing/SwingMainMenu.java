@@ -1,5 +1,7 @@
 package Swing;
 
+import business_logic.Order;
+import business_logic.User;
 import database.ConnectionManager;
 
 
@@ -53,20 +55,20 @@ public class SwingMainMenu extends JFrame {
 
         root = new DefaultMutableTreeNode();//root tree node
 
-        //Meat
+        // tree node Meat
         meat = makeTree("Meat", root);
         makeTree("Pork", meat);
         makeTree("Beef", meat);
         makeTree("Chicken", meat);
 
-        //vegetables
+        // tree node vegetables
         vegetables = makeTree("Vegetables", root);
 
-        //Beverage
+        // tree node Beverage
         beverage = makeTree("Beverage", root);
 
 
-        //customization
+        //ctree node customization
         customization = makeTree("Customization", root);
 
         // Create the tree and conceal the root
@@ -106,16 +108,14 @@ public class SwingMainMenu extends JFrame {
         ImageIcon img = new ImageIcon("src/pictures/Kung Pao Chicken.jpg");
         setIconImage(img.getImage());
         setVisible(true);
-        setResizable(false);
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
 
     private void backToMainInterface() {
         try {
-            con.connect();
-            con.update("delete from user where TableID='" + tableNumber + "'");
+            new User(tableNumber).delete();
             new SwingMainInterface();
-            con.disconnect();
             dispose();
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -129,6 +129,7 @@ public class SwingMainMenu extends JFrame {
         grid.setHgap(10);
         jPanel.setLayout(grid);
         recipeList = new Recipe().readRecipe(value);
+        //let image and nameLabel be a small vbox added in the grid
         for (int i = 0; i < recipeList.size(); i++) {
             Image image = ImageIO.read(new File("src/pictures/" + recipeList.get(i).getImage()));
             Image resizedImage = image.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
@@ -149,6 +150,7 @@ public class SwingMainMenu extends JFrame {
             v1.add(Box.createVerticalStrut(10));
             v1.add(nameLabel);
             jPanel.add(v1);
+
         }
         jScrollPane.setBorder(new EmptyBorder(10, 10, 10, 10));//clear the border line and add paddings
         Box v2 = Box.createVerticalBox();
@@ -183,27 +185,24 @@ public class SwingMainMenu extends JFrame {
         });
     }
 
+    //add listener for image in the context of Customization category. If the customization is created, it can not be created again
+    //if customers click a image whose corresponding recipe has existed in the order table, an alert dialog will show
     private void addEventHandlerForCustomization(JLabel imageLabel, JLabel nameLabel, int dishID) {
 
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                con.connect();
-                ResultSet resultSet = con.query("select 1 from order1 where dishID='" + dishID + "'AND TableID='" + tableNumber + "'");
-                try {
-                    if (resultSet.next()) {
-                      JOptionPane.showMessageDialog(jPanel,"Please choose another customized recipe or delete it in Order Table","Hint",JOptionPane.INFORMATION_MESSAGE);
+                Order judgeOrder = new Order();
+                judgeOrder.setDishID(dishID);
+                if (judgeOrder.toOrder(tableNumber, false)) {
+                    try {
+                        new SwingCustomization(nameLabel, tableNumber, dishID);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
                     }
-                    else new SwingCustomization(nameLabel, tableNumber, dishID);
-
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                } else {
+                    JOptionPane.showMessageDialog(jPanel, "Please choose another customized recipe or delete it in Order Table", "Hint", JOptionPane.INFORMATION_MESSAGE);
                 }
-
-               con.disconnect();
-
             }
         });
     }

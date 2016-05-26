@@ -47,7 +47,7 @@ public class SwingDetails extends JFrame {
                 order.setDishID(recipe.get(0).getDishID());
                 order.setAmount(amount.getText());
                 order.setIngredient("");
-                order.toOrder(tableNumber);
+                order.toOrder(tableNumber, true);
                 dispose();
             } else JOptionPane.showMessageDialog(this, "Amount is too large", "Warning", JOptionPane.WARNING_MESSAGE);
 

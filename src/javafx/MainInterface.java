@@ -1,5 +1,6 @@
 package javafx;
 
+import business_logic.User;
 import database.ConnectionManager;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -20,7 +21,7 @@ import static javafx.scene.text.FontWeight.*;
 
 public class MainInterface extends Application {
 
-    ConnectionManager con = new ConnectionManager();
+
 
     public static void main(String[] args) {
 
@@ -53,12 +54,10 @@ public class MainInterface extends Application {
                 int tableNumber = Integer.parseInt(text.getText());
 //check if table number has existed
                 if (tableNumber < 100 && tableNumber > 0) {
-                    con.connect();
-                    if (con.update("insert into user values('" + tableNumber + "')") == 1) {
+
+                    if (new User(tableNumber).toUser()) {
 
                         new MainMenu(tableNumber);
-
-                        con.disconnect();
                         primaryStage.close();
                     } else {
                         AlertBox.display("Error", "Table Number exists");
@@ -81,11 +80,10 @@ public class MainInterface extends Application {
         vbox1.getChildren().addAll(nameLabel, vbox2, copyRight);
         vbox2.setAlignment(Pos.CENTER);
         primaryStage.setScene(new Scene(vbox1, 500, 600));
-        primaryStage.setMaxHeight(600);
-        primaryStage.setMaxWidth(500);
+
         primaryStage.setResizable(false);
         primaryStage.getIcons().add(new Image("pictures/Kung Pao Chicken.jpg"));
         primaryStage.show();
-        primaryStage.setOnCloseRequest(e-> Platform.exit());
+        primaryStage.setOnCloseRequest(e-> Platform.exit());//exit whole application
     }
 }

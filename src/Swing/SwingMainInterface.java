@@ -1,6 +1,7 @@
 package Swing;
 
 
+import business_logic.User;
 import database.ConnectionManager;
 
 import javax.swing.*;
@@ -14,7 +15,7 @@ import java.awt.Font;
  * This class shows The Front page. Input a table number
  */
 public class SwingMainInterface extends JFrame {
-    ConnectionManager con = new ConnectionManager();
+
     JButton confirm;
     JTextField text;
     JLabel RestaurantName;
@@ -60,10 +61,11 @@ public class SwingMainInterface extends JFrame {
                 int tableNumber = Integer.parseInt(text.getText());
                 //table number should be smaller than 100 and larger than0
                 if (tableNumber < 100 && tableNumber > 0) {
-                    con.connect();
+
                     //check if there has existed same table number
-                    if (con.update("insert into user values('" + tableNumber + "')") == 1) {
+                    if (new User(tableNumber).toUser()) {
                         new SwingMainMenu(tableNumber);
+
                         dispose();
                     } else {
                         SwingAlertBox.display("Error", "Table Number exists");

@@ -58,7 +58,7 @@ public class Details {
                 order.setDishID(recipe.get(0).getDishID());
                 order.setAmount(amount.getText());
                 order.setIngredient("");
-                order.toOrder(tableNumber);
+                order.toOrder(tableNumber,true);
                 detailStage.close();
             } else AlertBox.display("Error", "Amount is too large");
         });

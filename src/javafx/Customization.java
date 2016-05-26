@@ -14,8 +14,6 @@ import javafx.stage.Stage;
 import business_logic.Ingredient;
 import business_logic.Order;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -90,7 +88,7 @@ public class Customization {
                 order.setDishID(dishID);
                 order.setPrice(String.valueOf(price * Integer.parseInt(amount.getText())));
                 order.setIngredient(ingredient);
-                order.toOrder(tableNumber);
+                order.toOrder(tableNumber, true);
                 customizationStage.close();
 
             }
@@ -135,9 +133,9 @@ public class Customization {
         v1.setAlignment(Pos.TOP_CENTER);
         v1.getChildren().addAll(new Label(this.customizationName.getText()), scrollPane, hBoxForChoosingRecipeAmount, confirmButton);
         //Display the window.
-        customizationStage.setScene(new Scene(v1, 1024, 700));
-        customizationStage.setMaxHeight(700);
-        customizationStage.setMaxWidth(1024);
+        customizationStage.setScene(new Scene(v1, 800, 700));
+        customizationStage.setMinHeight(700);
+        customizationStage.setMinWidth(800);
         customizationStage.getIcons().add(new Image("pictures/Kung Pao Chicken.jpg"));
         customizationStage.setTitle(customizationName.getText());
         customizationStage.show();

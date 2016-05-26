@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Created by Mingda Zhen on 2016/4/8.
- *  version 1.0
+ * version 1.0
  * Order class invokes DAO and DTO to transfer data
  */
 
@@ -85,22 +85,26 @@ public class Order {
         this.amount = amount;
     }
 
-// tranfer order data to order table in the database by DAO
-    public boolean toOrder(int tableID) {
+    // tranfer order data to order table in the database by DAO. Prevent from adding order repeatedly
+    public boolean toOrder(int tableID, boolean check) {//boolean check is to judge category customization or other categories
         List<OrderTo> judgeOrderTo = new LinkedList<>();
-        judgeOrderTo = new OrderDao(db).read(tableID);
+        OrderDao orderDao = new OrderDao(db);
+        judgeOrderTo = orderDao.read(tableID);
         OrderTo orderTo = new OrderTo(tableID, dishID, recipeName, ingredient, amount, price);
         db.connect();
-        OrderDao orderDao = new OrderDao(db);
         for (OrderTo i : judgeOrderTo) {
             if (i.getDishID() == dishID) {
-                orderDao.update(orderTo);
-                return false;
+                if (check) {
+                    orderDao.update(orderTo);
+                    return false;
+                } else
+                    return false;
             }
         }
         orderDao.create(orderTo);
         return true;
     }
+
     // get order data from order table in the database by DAO
     public List<Order> getOrder(int tableNumber) {
 
@@ -114,7 +118,8 @@ public class Order {
         return orderList;
 
     }
-//delete order in the order table in database by DAO
+
+    //delete order in the order table in database by DAO
     public void delete(int tableNumber, String recipeName) {
         OrderDao orderDao = new OrderDao(db);
         OrderTo orderTo = new OrderTo();

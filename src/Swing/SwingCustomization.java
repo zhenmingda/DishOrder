@@ -1,6 +1,5 @@
 package Swing;
 
-import database.ConnectionManager;
 import business_logic.Ingredient;
 import business_logic.Order;
 
@@ -8,12 +7,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -74,7 +69,7 @@ public class SwingCustomization extends JFrame {
                 order.setDishID(dishID);
                 order.setPrice(String.valueOf(price * Integer.parseInt(amount.getText())));
                 order.setIngredient(ingredient);
-                order.toOrder(tableNumber);
+                order.toOrder(tableNumber, true);
                 confirmButton.setEnabled(false);
                 dispose();
             }
@@ -155,13 +150,14 @@ public class SwingCustomization extends JFrame {
         setLayout(new FlowLayout());
         add(v1);
         //Display the window.
-        setMaximumSize(new Dimension(1024, 700));
+        setSize(new Dimension(800, 700));
         setLocationRelativeTo(null);
         setTitle("Customization");
         ImageIcon img = new ImageIcon("src/pictures/Kung Pao Chicken.jpg");
         setIconImage(img.getImage());
+        pack();
         setVisible(true);
-        setResizable(false);
+
     }
 
     private void addEventHandler(JCheckBox checkBox, JComboBox comboBox, JLabel priceLabel, JLabel nameLabel) {
