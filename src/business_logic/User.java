@@ -8,6 +8,8 @@ import java.util.List;
 
 /**
  * Created by dashu on 2016/5/26.
+ * version 1.0
+ * User class invokes DAO and DTO to get table id and insert table id
  */
 public class User {
     ConnectionManager db = new ConnectionManager();
