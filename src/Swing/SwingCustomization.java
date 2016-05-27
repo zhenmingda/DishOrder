@@ -102,7 +102,6 @@ public class SwingCustomization extends JFrame {
             comboBox.setEnabled(false);
             addEventHandler(checkBox, comboBox, priceLabel, nameLabel); //add listener for checkbox. If checkbox is not selected, combobox can not be activated
 
-
             Box hBoxForAmount = Box.createHorizontalBox();//create a horizontal box for amount line
             Box vBoxForEachIngredient = Box.createVerticalBox();//create a vertical box for every ingredient's information
             hBoxForAmount.add(checkBox);
