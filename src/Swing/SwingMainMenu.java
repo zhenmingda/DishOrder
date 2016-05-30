@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
@@ -73,6 +74,10 @@ public class SwingMainMenu extends JFrame {
 
         // Create the tree and conceal the root
         tree = new JTree(root);
+
+        addIconToTreeNode(tree);
+
+
         tree.setRootVisible(false);
         tree.expandPath(new TreePath(meat.getPath()));
         add(tree, BorderLayout.WEST);
@@ -102,7 +107,7 @@ public class SwingMainMenu extends JFrame {
         viewOrder.setAlignmentX(Component.CENTER_ALIGNMENT);
         //Display the window.
         setSize(1024, 700);
-        setMinimumSize(new Dimension(1024, 700));
+
         setLocationRelativeTo(null);
         setTitle("SwingMainInterface Menu");
         ImageIcon img = new ImageIcon("src/pictures/Kung Pao Chicken.jpg");
@@ -111,6 +116,8 @@ public class SwingMainMenu extends JFrame {
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
+
+
 
     private void backToMainInterface() {
         try {
@@ -188,7 +195,6 @@ public class SwingMainMenu extends JFrame {
     //add listener for image in the context of Customization category. If the customization is created, it can not be created again
     //if customers click a image whose corresponding recipe has existed in the order table, an alert dialog will show
     private void addEventHandlerForCustomization(JLabel imageLabel, JLabel nameLabel, int dishID) {
-
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -215,5 +221,20 @@ public class SwingMainMenu extends JFrame {
         return item;
     }
 
+    private static void addIconToTreeNode(JTree tree) {
+        Image image = null;
+        try {
+            image = ImageIO.read(new File("src/pictures/Potato.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Image resizedImage = image.getScaledInstance(20, 20, Image.SCALE_DEFAULT);
+        ImageIcon icon = new ImageIcon(resizedImage);
+        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+        renderer.setLeafIcon(icon);
+        renderer.setOpenIcon(icon);
+        renderer.setClosedIcon(icon);
+        tree.setCellRenderer(renderer);
+    }
 
 }

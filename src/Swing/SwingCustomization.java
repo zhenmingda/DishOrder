@@ -78,8 +78,6 @@ public class SwingCustomization extends JFrame {
         GridLayout grid = new GridLayout(0, 3);
         grid.setVgap(8);
         grid.setHgap(30);
-
-
         JPanel jPanel = new JPanel();
         jPanel.setLayout(grid);
 
@@ -149,12 +147,13 @@ public class SwingCustomization extends JFrame {
         setLayout(new FlowLayout());
         add(v1);
         //Display the window.
-        setSize(new Dimension(800, 700));
+        setMinimumSize(new Dimension(1024, 700));
+
         setLocationRelativeTo(null);
         setTitle("Customization");
         ImageIcon img = new ImageIcon("src/pictures/Kung Pao Chicken.jpg");
         setIconImage(img.getImage());
-        pack();
+
         setVisible(true);
 
     }

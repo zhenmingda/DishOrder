@@ -16,7 +16,7 @@ import java.awt.Font;
  */
 public class SwingMainInterface extends JFrame {
 
-    JButton confirm;
+
     JTextField text;
     JLabel RestaurantName;
     JLabel copyRight;
@@ -32,11 +32,14 @@ public class SwingMainInterface extends JFrame {
         setTitle("Shanghai Restaurant");
         RestaurantName = new JLabel("Shanghai Restaurant");
         RestaurantName.setFont(new Font("Arial", Font.BOLD, 30));
-        RestaurantName.setForeground(Color.RED);
+        RestaurantName.setForeground(Color.decode("#ab1a1a"));
         copyRight = new JLabel("© Copyright 2016 Shanghai Restaurant");
         tableID = new JLabel("Table Number");
         text = new JTextField();
-        confirm = new JButton("Confirm");
+        JButton confirm = new JButton("Confirm");
+        confirm.setBackground(Color.decode("#7cafc2"));//set the background color
+        confirm.setForeground(Color.white);//set text color by hex
+
         Box vBox = Box.createVerticalBox();
         Box hBox = Box.createHorizontalBox();
         RestaurantName.setAlignmentX(Component.CENTER_ALIGNMENT);

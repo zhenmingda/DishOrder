@@ -1,7 +1,6 @@
 package javafx;
 
 import business_logic.User;
-import database.ConnectionManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -10,7 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
@@ -47,6 +45,7 @@ public class MainInterface extends Application {
         hbox.setAlignment(Pos.CENTER);
         hbox.getChildren().addAll(tableID, text);
         Button confirm = new Button("Confirm");
+
         confirm.setDefaultButton(true);
         confirm.setOnAction(e ->
         {
@@ -77,8 +76,10 @@ public class MainInterface extends Application {
 
         });
         vbox2.getChildren().addAll(hbox, confirm);
+
         vbox1.getChildren().addAll(nameLabel, vbox2, copyRight);
         vbox2.setAlignment(Pos.CENTER);
+
         primaryStage.setScene(new Scene(vbox1, 500, 600));
 
         primaryStage.setResizable(false);

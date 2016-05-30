@@ -133,9 +133,9 @@ public class Customization {
         v1.setAlignment(Pos.TOP_CENTER);
         v1.getChildren().addAll(new Label(this.customizationName.getText()), scrollPane, hBoxForChoosingRecipeAmount, confirmButton);
         //Display the window.
-        customizationStage.setScene(new Scene(v1, 800, 700));
+        customizationStage.setScene(new Scene(v1));
         customizationStage.setMinHeight(700);
-        customizationStage.setMinWidth(800);
+        customizationStage.setMinWidth(1024);
         customizationStage.getIcons().add(new Image("pictures/Kung Pao Chicken.jpg"));
         customizationStage.setTitle(customizationName.getText());
         customizationStage.show();

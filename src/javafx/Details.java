@@ -76,10 +76,13 @@ public class Details {
         vBox.getChildren().addAll(dishID, nameLabel, imageView, introduction
                 , priceLabel, hBoxForAmount, confirmButton);
 
-        detailStage.setScene(new Scene(vBox));
-        vBox.setMinSize(500,600);
+        detailStage.setScene(new Scene(vBox,500,600));
+
         detailStage.getIcons().add(new Image("pictures/Kung Pao Chicken.jpg"));
         detailStage.setTitle(recipeName);
+        detailStage.setMinHeight(500);
+        detailStage.setMinWidth(600);
+      //detailStage.sizeToScene();
         detailStage.show();
 
     }

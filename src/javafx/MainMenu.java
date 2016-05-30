@@ -11,6 +11,7 @@ import business_logic.User;
 import database.ConnectionManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -45,10 +46,7 @@ public class MainMenu {
     private int tableNumber;
     private boolean check = true;
 
-
     public MainMenu(int tableNumber) {
-
-
         this.tableNumber = tableNumber;
         next();
     }
@@ -78,13 +76,13 @@ public class MainMenu {
         //Beverage
         beverage = makeTree("Beverage", root);
 
-
         //customization
         customization = makeTree("Customization", root);
 
-
         //Create the tree and hide the main Root
         tree = new TreeView<>(root);
+
+
         tree.setShowRoot(false);
         tree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         tree.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
@@ -93,7 +91,6 @@ public class MainMenu {
                 return;
             if (newValue.isLeaf()) {
                 String value = newValue.getValue();
-
                 show(value);//create gridpane
             }
         });
@@ -107,6 +104,7 @@ public class MainMenu {
         mainMenu.setMaxWidth(1024);
         mainMenu.setScene(scene);
         mainMenu.getIcons().add(new Image("pictures/Kung Pao Chicken.jpg"));
+
         mainMenu.show();
         mainMenu.setOnCloseRequest(event -> event.consume());//window will not be close
     }
@@ -154,7 +152,6 @@ public class MainMenu {
         v2.setPadding(new Insets(20, 10, 10, 10));
         v2.getChildren().add(scrollPane);
         borderPane.setCenter(v2);
-
     }
 
     //add listener for image in the context of Customization category. If the customization is created, it can not be created again
@@ -168,12 +165,8 @@ public class MainMenu {
             if (judgeOrder.toOrder(tableNumber,false)) {
                 new Customization(nameLabel, tableNumber, dishID);
             } else {
-
                 alert();//alert dialog
-
             }
-
-
         });
     }
 
@@ -195,8 +188,12 @@ public class MainMenu {
 
     //create tree, add tree item
     public TreeItem<String> makeTree(String title, TreeItem<String> parent) {
-        TreeItem<String> treeItem = new TreeItem<>(title);
+        ImageView icon=new ImageView("pictures/Potato.jpg" );
+        icon.setFitHeight(20);
+        icon.setFitWidth(20);
+        TreeItem<String> treeItem = new TreeItem<>(title,icon);
         treeItem.setExpanded(true);
+
         parent.getChildren().add(treeItem);
         return treeItem;
     }
@@ -204,10 +201,11 @@ public class MainMenu {
     private void backToMainInterface() {
         try {
             new User(tableNumber).delete();
-            new MainInterface().start(mainMenu);
+            new MainInterface().start(new Stage());
             mainMenu.close();
         } catch (Exception e1) {
             e1.printStackTrace();
         }
     }
 }
+
