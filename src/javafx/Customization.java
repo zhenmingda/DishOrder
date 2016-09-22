@@ -14,8 +14,6 @@ import javafx.stage.Stage;
 import business_logic.Ingredient;
 import business_logic.Order;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -74,55 +72,27 @@ public class Customization {
         grid.setVgap(8);
         grid.setHgap(30);
         int j = 0;
-        con.connect();
-        //check if there has existed a same name customized recipe
-        ResultSet resultSet = con.query("select 1 from order1 where dishID='" + dishID + "'AND TableID='" + tableNumber + "'");
-        try {
 
-            while (resultSet.next()) {
-
-                if (resultSet.getInt("1") == 1) {
-                    con.disconnect();
-                    customizationStage.close();
-                }
-            }
-            con.disconnect();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
         amount.setEditable(false);
+        addAmount(amount, addButton, minusButton);
 
-        //add amount
-        addButton.setOnAction(e -> {
-            int i = Integer.parseInt(amount.getText());
-            i = i + 1;
-            amount.setText(String.valueOf(i));
-        });
-        //minus amount
-        minusButton.setOnAction(e -> {
-            int i = Integer.parseInt(amount.getText());
-            if (i == 1) {
-                amount.setText("1");
-            } else
-                i = i - 1;
-            amount.setText(String.valueOf(i));
-        });
+
         //tranfer order data to "order1" table in the database
         confirmButton.setOnAction(e -> {
             if (price > 0) {
+                ingredient = ingredient.substring(0, ingredient.length() - 2);
                 Order order = new Order();
                 order.setRecipeName(this.customizationName.getText());
                 order.setAmount(amount.getText());
                 order.setDishID(dishID);
                 order.setPrice(String.valueOf(price * Integer.parseInt(amount.getText())));
                 order.setIngredient(ingredient);
-                order.toOrder(tableNumber);
+                order.toOrder(tableNumber, true);
                 customizationStage.close();
 
             }
         });
-
 
 
         //choose ingredients from ingredient table in database. Add these in a grid pane with 3 columns
@@ -163,11 +133,30 @@ public class Customization {
         v1.setAlignment(Pos.TOP_CENTER);
         v1.getChildren().addAll(new Label(this.customizationName.getText()), scrollPane, hBoxForChoosingRecipeAmount, confirmButton);
         //Display the window.
-        customizationStage.setScene(new Scene(v1, 768, 1024));
-        customizationStage.setMaxHeight(768);
-        customizationStage.setMaxWidth(1024);
+        customizationStage.setScene(new Scene(v1));
+        customizationStage.setMinHeight(700);
+        customizationStage.setMinWidth(1024);
         customizationStage.getIcons().add(new Image("pictures/Kung Pao Chicken.jpg"));
+        customizationStage.setTitle(customizationName.getText());
         customizationStage.show();
+    }
+
+    private static void addAmount(TextField amount, Button addButton, Button minusButton) {
+        //add amount
+        addButton.setOnAction(e -> {
+            int i = Integer.parseInt(amount.getText());
+            i = i + 1;
+            amount.setText(String.valueOf(i));
+        });
+        //minus amount
+        minusButton.setOnAction(e -> {
+            int i = Integer.parseInt(amount.getText());
+            if (i == 1) {
+                amount.setText("1");
+            } else
+                i = i - 1;
+            amount.setText(String.valueOf(i));
+        });
     }
 
     //add listener for checkbox. If checkbox is not selected, combobox can not be activated
@@ -178,10 +167,11 @@ public class Customization {
 
                 comboBox.setDisable(false);
                 price += Integer.parseInt(priceLabel.getText());
-                ingredient = ingredient + " , " + nameLabel.getText();
+                ingredient = ingredient + nameLabel.getText() + ", ";
+
             } else {
                 price -= Integer.parseInt(priceLabel.getText());
-                ingredient = ingredient.replace(nameLabel.getText(), "");
+                ingredient = ingredient.replace(nameLabel.getText() + ", ", "");
                 comboBox.setValue(null);
                 comboBox.setDisable(true);
 
@@ -189,6 +179,7 @@ public class Customization {
         });
 
     }
+
     public int getTableNumber() {
         return tableNumber;
     }

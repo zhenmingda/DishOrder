@@ -21,8 +21,6 @@ public class Recipe {
     private String image;
     private int dishID;
 
-
-
     public String getRecipeName() {
         return recipeName;
     }

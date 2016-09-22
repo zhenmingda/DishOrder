@@ -20,17 +20,16 @@ public class SwingDetails extends JFrame {
 
     private int tableNumber;
     private String recipeName;
-    JLabel label;
 
 
     public SwingDetails(String recipeName, int tableNumber) throws IOException {
         this.recipeName = recipeName;
         this.tableNumber = tableNumber;
-        label = new JLabel(recipeName);
         setGui();
     }
 // show GUI
     private void setGui() throws IOException {
+        JLabel nameLabel = new JLabel(recipeName);
         List<Recipe> recipe = new Recipe().readRecipe(recipeName);
         Order order = new Order();
         JTextField amount = new JTextField("1", 5);
@@ -39,7 +38,7 @@ public class SwingDetails extends JFrame {
         JButton addButton = new JButton("+");
         JButton minusButton = new JButton("-");
         JButton confirmButton = new JButton("Confirm");
-        addAmount(amount, addButton, minusButton);
+        handleAmount(amount, addButton, minusButton);
         //add recipe to order table in the database 
         confirmButton.addActionListener(e -> {
             if (Integer.parseInt(amount.getText()) < 20) {
@@ -48,7 +47,7 @@ public class SwingDetails extends JFrame {
                 order.setDishID(recipe.get(0).getDishID());
                 order.setAmount(amount.getText());
                 order.setIngredient("");
-                order.toOrder(tableNumber);
+                order.toOrder(tableNumber, true);
                 dispose();
             } else JOptionPane.showMessageDialog(this, "Amount is too large", "Warning", JOptionPane.WARNING_MESSAGE);
 
@@ -76,10 +75,10 @@ public class SwingDetails extends JFrame {
         confirmButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         introLable.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         vBox.add(idLabel);
         vBox.add(Box.createVerticalStrut(20));
-        vBox.add(label);
+        vBox.add(nameLabel);
         vBox.add(Box.createVerticalStrut(20));
         vBox.add(imgageLabel);
         vBox.add(Box.createVerticalStrut(20));
@@ -97,14 +96,14 @@ public class SwingDetails extends JFrame {
         setMinimumSize(new Dimension(500, 600));
         setAlwaysOnTop(true);
         setLocationRelativeTo(null);
-        setTitle("Details");
+        setTitle(recipeName);
         ImageIcon img = new ImageIcon("src/pictures/Kung Pao Chicken.jpg");
         setIconImage(img.getImage());
         setVisible(true);
-        pack();
-    }
 
-    private static void addAmount(JTextField amount, JButton addButton, JButton minusButton) {
+    }
+    //increase or decrease amount
+    private static void handleAmount(JTextField amount, JButton addButton, JButton minusButton) {
         addButton.addActionListener(e -> {
             int i = Integer.parseInt(amount.getText());
             i = i + 1;

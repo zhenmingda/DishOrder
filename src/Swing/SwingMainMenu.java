@@ -1,5 +1,7 @@
 package Swing;
 
+import business_logic.Order;
+import business_logic.User;
 import database.ConnectionManager;
 
 
@@ -9,12 +11,15 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -36,40 +41,43 @@ public class SwingMainMenu extends JFrame {
 
     GridLayout grid = new GridLayout(0, 3);
 
-    public static void main(String[] args) {
-        new SwingMainMenu(85);
-    }
 
     public SwingMainMenu(int tableNumber) {
         this.tableNumber = tableNumber;
         next();
     }
-//show GUI
+
+    //show GUI
     private void next() {
         DefaultMutableTreeNode root, meat, beverage, vegetables, customization;
         backToMainButton.addActionListener(e -> {
             backToMainInterface();
         });//rechoose table number
-        root = new DefaultMutableTreeNode();
 
-        //Meat
+        root = new DefaultMutableTreeNode();//root tree node
+
+        // tree node Meat
         meat = makeTree("Meat", root);
         makeTree("Pork", meat);
         makeTree("Beef", meat);
         makeTree("Chicken", meat);
 
-        //vegetables
+        // tree node vegetables
         vegetables = makeTree("Vegetables", root);
 
-        //Beverage
+        // tree node Beverage
         beverage = makeTree("Beverage", root);
 
 
-        //customization
+        //ctree node customization
         customization = makeTree("Customization", root);
 
         // Create the tree and conceal the root
         tree = new JTree(root);
+
+        addIconToTreeNode(tree);
+
+
         tree.setRootVisible(false);
         tree.expandPath(new TreePath(meat.getPath()));
         add(tree, BorderLayout.WEST);
@@ -92,26 +100,29 @@ public class SwingMainMenu extends JFrame {
         JPanel jSouth = new JPanel();
         jSouth.add(backToMainButton);
         add(jSouth, BorderLayout.SOUTH);
-        viewOrder.addActionListener(e -> new SwingShowOrder(tableNumber));
+        viewOrder.addActionListener(e -> {
+            new SwingShowOrder(tableNumber);
+
+        });
         viewOrder.setAlignmentX(Component.CENTER_ALIGNMENT);
         //Display the window.
         setSize(1024, 700);
-        setMinimumSize(new Dimension(1024, 700));
+
         setLocationRelativeTo(null);
         setTitle("SwingMainInterface Menu");
         ImageIcon img = new ImageIcon("src/pictures/Kung Pao Chicken.jpg");
         setIconImage(img.getImage());
         setVisible(true);
-        setResizable(false);
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
 
+
+
     private void backToMainInterface() {
         try {
-            con.connect();
-            con.update("delete from user where TableID='" + tableNumber + "'");
+            new User(tableNumber).delete();
             new SwingMainInterface();
-            con.disconnect();
             dispose();
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -125,6 +136,7 @@ public class SwingMainMenu extends JFrame {
         grid.setHgap(10);
         jPanel.setLayout(grid);
         recipeList = new Recipe().readRecipe(value);
+        //let image and nameLabel be a small vbox added in the grid
         for (int i = 0; i < recipeList.size(); i++) {
             Image image = ImageIO.read(new File("src/pictures/" + recipeList.get(i).getImage()));
             Image resizedImage = image.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
@@ -136,13 +148,16 @@ public class SwingMainMenu extends JFrame {
                 addEventHandler(imageLabel, nameLabel, recipeList.get(i).getDishID());
             } else {
                 addEventHandlerForCustomization(imageLabel, nameLabel, recipeList.get(i).getDishID());
+
             }
+
             Box v1 = Box.createVerticalBox();//create a vertical box for each recipe
             v1.add(Box.createVerticalStrut(10));
             v1.add(imageLabel);
             v1.add(Box.createVerticalStrut(10));
             v1.add(nameLabel);
             jPanel.add(v1);
+
         }
         jScrollPane.setBorder(new EmptyBorder(10, 10, 10, 10));//clear the border line and add paddings
         Box v2 = Box.createVerticalBox();
@@ -155,13 +170,15 @@ public class SwingMainMenu extends JFrame {
             hintLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             v2.add(hintLabel);
             v2.add(Box.createVerticalStrut(10));
-        } else hintLabel.setText("");//the text of hint label will appear if clicking another category aftering clicking customization.
-                                        // So it should be set null
+        } else
+            hintLabel.setText("");//the text of hint nameLabel will appear if clicking another category aftering clicking customization.
+        // So it should be set null
         v2.add(jScrollPane);
         add(v2, BorderLayout.CENTER);
     }
 
     //add listener for image.
+
     private void addEventHandler(JLabel imageLabel, JLabel nameLabel, int dishID) {
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -175,22 +192,27 @@ public class SwingMainMenu extends JFrame {
         });
     }
 
-    //add listener for image in the context of Customization category
+    //add listener for image in the context of Customization category. If the customization is created, it can not be created again
+    //if customers click a image whose corresponding recipe has existed in the order table, an alert dialog will show
     private void addEventHandlerForCustomization(JLabel imageLabel, JLabel nameLabel, int dishID) {
-
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                try {
-                    new SwingCustomization(nameLabel, tableNumber, dishID);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                Order judgeOrder = new Order();
+                judgeOrder.setDishID(dishID);
+                if (judgeOrder.toOrder(tableNumber, false)) {
+                    try {
+                        new SwingCustomization(nameLabel, tableNumber, dishID);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(jPanel, "Please choose another customized recipe or delete it in Order Table", "Hint", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
-
-
     }
+
 
     //make a tree
     public DefaultMutableTreeNode makeTree(String title, DefaultMutableTreeNode parent) {
@@ -199,5 +221,20 @@ public class SwingMainMenu extends JFrame {
         return item;
     }
 
+    private static void addIconToTreeNode(JTree tree) {
+        Image image = null;
+        try {
+            image = ImageIO.read(new File("src/pictures/Potato.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Image resizedImage = image.getScaledInstance(20, 20, Image.SCALE_DEFAULT);
+        ImageIcon icon = new ImageIcon(resizedImage);
+        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+        renderer.setLeafIcon(icon);
+        renderer.setOpenIcon(icon);
+        renderer.setClosedIcon(icon);
+        tree.setCellRenderer(renderer);
+    }
 
 }

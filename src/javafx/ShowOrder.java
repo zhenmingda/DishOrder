@@ -36,7 +36,7 @@ public class ShowOrder {
 
     //Show GUI
     public void setGui() {
-        TableView<Order> table;
+
         Stage showOrder = new Stage();
         showOrder.setTitle("Your Order");
         VBox v1 = new VBox(20);
@@ -83,7 +83,6 @@ public class ShowOrder {
                     public TableCell call(final TableColumn<Order, String> param) {
                         final TableCell<Order, String> cell = new TableCell<Order, String>() {
                             final Button deleteButton = new Button("Delete");
-
                             @Override
                             public void updateItem(String item, boolean empty) {
                                 super.updateItem(item, empty);
@@ -109,7 +108,7 @@ public class ShowOrder {
                 };
         deleteColumn.setCellFactory(cellFactory);
 
-        table = new TableView<>();
+        TableView<Order>  table = new TableView<>();
         table.setItems(show());
         table.getColumns().addAll(nameColumn, ingredientColumn, priceColumn, amountColumn, deleteColumn);
         Label tableNumber = new Label("Table Number:" + this.tableNumber);

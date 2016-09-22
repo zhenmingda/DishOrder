@@ -111,12 +111,10 @@ class MyTableModel extends AbstractTableModel {
         data2 = data;
     }
 
-
     public int getColumnCount() {
         return columnNames.length;
     }
-
-   public int getRowCount() {
+    public int getRowCount() {
         return data.length;
     }
 //set column name
@@ -124,22 +122,13 @@ class MyTableModel extends AbstractTableModel {
         return columnNames[col];
     }
 //get cell content
- public Object getValueAt(int row, int col) {
+    public Object getValueAt(int row, int col) {
         return data[row][col];
     }
 
-    /*
-     * JTable uses this method to determine the default renderer/
-     * editor for each cell.
-     */
-    public Class getColumnClass(int c) {
-        return getValueAt(0, c).getClass();
-    }
-
-    /*
-     *
-     * set cell uneditable except button column
-     */
+    // JTable uses this method to determine the default renderer/editor for each cell.
+    public Class getColumnClass(int c) {return getValueAt(0, c).getClass();}
+    //set cell uneditable except button column
     public boolean isCellEditable(int row, int col) {
         //Note that the data/cell address is constant,
         //no matter where the cell appears onscreen.
@@ -149,7 +138,6 @@ class MyTableModel extends AbstractTableModel {
             return false;
         }
     }
-
 
 }
 
@@ -200,7 +188,7 @@ class ButtonEditor extends DefaultCellEditor {
                                                  boolean selected, int row, int col) {
 
         //set text to button,set clicked to true,then return the button object
-        lbl = (obj == null) ? "" : obj.toString();
+
         new Order().delete(tableNumber, String.valueOf(data[row][0]));
        frame.dispose();
         new SwingShowOrder(tableNumber);

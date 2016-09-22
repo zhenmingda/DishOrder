@@ -1,6 +1,5 @@
 package Swing;
 
-import database.ConnectionManager;
 import business_logic.Ingredient;
 import business_logic.Order;
 
@@ -10,8 +9,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -29,6 +26,7 @@ public class SwingCustomization extends JFrame {
     private int price = 0;
 
     public SwingCustomization(JLabel customizationName, int tableNumber, int dishID) throws IOException {
+
         this.customizationName = customizationName;
         this.tableNumber = tableNumber;
         this.dishID = dishID;
@@ -40,22 +38,8 @@ public class SwingCustomization extends JFrame {
         List<Ingredient> ingredientList = new Ingredient().readIngredient();
 
         JButton confirmButton = new JButton("Confirm");
-        ConnectionManager con = new ConnectionManager();
-        con.connect();
-        ResultSet resultSet = con.query("select 1 from order1 where dishID='" + dishID + "'AND TableID='" + tableNumber + "'");
-        try {
 
-            while (resultSet.next()) {
 
-                if (resultSet.getInt("1") == 1) {
-                    con.disconnect();
-                    dispose();
-                }
-            }
-            con.disconnect();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         JTextField amount = new JTextField("1", 5);
         amount.setEditable(false);
 
@@ -85,7 +69,8 @@ public class SwingCustomization extends JFrame {
                 order.setDishID(dishID);
                 order.setPrice(String.valueOf(price * Integer.parseInt(amount.getText())));
                 order.setIngredient(ingredient);
-                order.toOrder(tableNumber);
+                order.toOrder(tableNumber, true);
+                confirmButton.setEnabled(false);
                 dispose();
             }
         });
@@ -93,8 +78,6 @@ public class SwingCustomization extends JFrame {
         GridLayout grid = new GridLayout(0, 3);
         grid.setVgap(8);
         grid.setHgap(30);
-
-
         JPanel jPanel = new JPanel();
         jPanel.setLayout(grid);
 
@@ -116,7 +99,6 @@ public class SwingCustomization extends JFrame {
             comboBox.addItem("1");
             comboBox.setEnabled(false);
             addEventHandler(checkBox, comboBox, priceLabel, nameLabel); //add listener for checkbox. If checkbox is not selected, combobox can not be activated
-
 
             Box hBoxForAmount = Box.createHorizontalBox();//create a horizontal box for amount line
             Box vBoxForEachIngredient = Box.createVerticalBox();//create a vertical box for every ingredient's information
@@ -165,13 +147,15 @@ public class SwingCustomization extends JFrame {
         setLayout(new FlowLayout());
         add(v1);
         //Display the window.
-        setMinimumSize(new Dimension(1024, 740));
+        setMinimumSize(new Dimension(1024, 700));
+
         setLocationRelativeTo(null);
         setTitle("Customization");
         ImageIcon img = new ImageIcon("src/pictures/Kung Pao Chicken.jpg");
         setIconImage(img.getImage());
+
         setVisible(true);
-        setResizable(false);
+
     }
 
     private void addEventHandler(JCheckBox checkBox, JComboBox comboBox, JLabel priceLabel, JLabel nameLabel) {

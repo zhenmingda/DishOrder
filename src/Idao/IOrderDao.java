@@ -11,7 +11,7 @@ import java.util.List;
  * The interface provides crund methods
  */
 public interface IOrderDao {
-     void create( OrderTo to);
+     int create( OrderTo to);
 
      List<OrderTo> read(int tableID);
 

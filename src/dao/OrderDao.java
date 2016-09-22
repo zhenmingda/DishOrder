@@ -25,11 +25,13 @@ public class OrderDao implements IOrderDao {
 
 //insert data into order table. Because "order" is a key word in SQL so that order1 becomes the table name
     @Override
-    public void create(OrderTo to) {
+    public int create(OrderTo to) {
         int update = con.update("INSERT INTO order1 VALUES('" + to.getTableID() + "','" + to.getDishID() + "','"
                 + to.getRecipeName() + "','" + to.getIngredient() + "','" + to.getAmount() + "','"
                 + to.getPrice() + "')");
         con.disconnect();
+        return update;
+
     }
 
 //read data from Order Table

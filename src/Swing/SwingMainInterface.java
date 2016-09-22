@@ -1,6 +1,7 @@
 package Swing;
 
 
+import business_logic.User;
 import database.ConnectionManager;
 
 import javax.swing.*;
@@ -14,8 +15,8 @@ import java.awt.Font;
  * This class shows The Front page. Input a table number
  */
 public class SwingMainInterface extends JFrame {
-    ConnectionManager con = new ConnectionManager();
-    JButton confirm;
+
+
     JTextField text;
     JLabel RestaurantName;
     JLabel copyRight;
@@ -31,11 +32,14 @@ public class SwingMainInterface extends JFrame {
         setTitle("Shanghai Restaurant");
         RestaurantName = new JLabel("Shanghai Restaurant");
         RestaurantName.setFont(new Font("Arial", Font.BOLD, 30));
-        RestaurantName.setForeground(Color.RED);
+        RestaurantName.setForeground(Color.decode("#ab1a1a"));
         copyRight = new JLabel("© Copyright 2016 Shanghai Restaurant");
         tableID = new JLabel("Table Number");
         text = new JTextField();
-        confirm = new JButton("Confirm");
+        JButton confirm = new JButton("Confirm");
+        confirm.setBackground(Color.decode("#7cafc2"));//set the background color
+        confirm.setForeground(Color.white);//set text color by hex
+
         Box vBox = Box.createVerticalBox();
         Box hBox = Box.createHorizontalBox();
         RestaurantName.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -60,10 +64,11 @@ public class SwingMainInterface extends JFrame {
                 int tableNumber = Integer.parseInt(text.getText());
                 //table number should be smaller than 100 and larger than0
                 if (tableNumber < 100 && tableNumber > 0) {
-                    con.connect();
+
                     //check if there has existed same table number
-                    if (con.update("insert into user values('" + tableNumber + "')") == 1) {
+                    if (new User(tableNumber).toUser()) {
                         new SwingMainMenu(tableNumber);
+
                         dispose();
                     } else {
                         SwingAlertBox.display("Error", "Table Number exists");
